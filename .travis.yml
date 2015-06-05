@@ -1,0 +1,6 @@
+language: ruby
+before_script:
+  - gem install rake
+script: rake
+rvm:
+  - 2.2.2
