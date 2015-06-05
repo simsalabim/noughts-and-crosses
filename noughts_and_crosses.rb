@@ -79,8 +79,8 @@ module NoughtsAndCrosses
 
     def generate_cells
       cells = []
-      for i in 0..@rows_size
-        for j in 0..@cols_size
+      for i in 0...@rows_size
+        for j in 0...@cols_size
           cells.push(Cell.new(i, j))
         end
       end
