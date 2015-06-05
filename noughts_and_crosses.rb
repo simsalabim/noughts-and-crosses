@@ -15,13 +15,13 @@ module NoughtsAndCrosses
   class Game
     PLAYER_STRATEGIES = %w(human win_block_or_optimal random).freeze
 
-    attr_reader :winner_row, :active_player
+    attr_reader :winner_row, :active_player, :board
 
     def initialize(rows_size, cols_size, winning_row_size)
       @rows_size = rows_size
       @cols_size = cols_size
       @winning_row_size = winning_row_size
-      @cells = generate_cells
+      @board = generate_board
 
       @winning_rows = horizontal_win_rows + vertical_win_rows +
                       diagonal_top_left_row_wins + diagonal_bottom_left_row_wins
@@ -77,14 +77,20 @@ module NoughtsAndCrosses
       end
     end
 
-    def generate_cells
-      cells = []
+    def generate_board
+      board = []
       for i in 0...@rows_size
+        row = []
         for j in 0...@cols_size
-          cells.push(Cell.new(i, j))
+          row.push(Cell.new(i, j))
         end
+        board.push(row)
       end
-      cells
+      board
+    end
+
+    def board_cells
+      @board_cells ||= board.flatten
     end
 
     def horizontal_win_rows
@@ -183,11 +189,11 @@ module NoughtsAndCrosses
     end
 
     def cell_at(row, column)
-      @cells.find { |cell| cell.row == row && cell.column == column }
+      board_cells.find { |cell| cell.row == row && cell.column == column }
     end
 
     def vacant_cells
-      @cells.select(&:vacant?)
+      board_cells.select(&:vacant?)
     end
 
     def occupy(cell, token)
@@ -209,7 +215,7 @@ module NoughtsAndCrosses
     # TODO
     # 'draw' can be detected at early stages as absence of potential winning rows
     def draw?
-      @cells.select(&:vacant?).size == 0
+      board_cells.select(&:vacant?).size == 0
     end
 
     def print_board
