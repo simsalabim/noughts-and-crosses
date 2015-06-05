@@ -1,0 +1,40 @@
+Documentation:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+  CountComments: false  # count full line comments?
+  Max: 10
+
+# Avoid complex methods.
+Metrics/CyclomaticComplexity:
+  Enabled: false
+  Max: 6
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: true
+  Max: 120
+
+Metrics/Metrics/PerceivedComplexity:
+  Enabled: false
+
+Metrics/BlockNesting:
+  Enabled: false
+  Max: 3
+
+Style/SingleLineBlockParams:
+  Enabled: false
+
+Style/For:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+  CountComments: false  # count full line comments?
+  Max: 100
+
+Performance/Count:
+  Enabled: false
