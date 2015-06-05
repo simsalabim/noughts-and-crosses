@@ -1,4 +1,4 @@
-# Noughts And Crosses
+# Noughts And Crosses ![Build Status] (https://travis-ci.org/simsalabim/noughts-and-crosses.svg?branch=master "Build Status")
 
 A simple console (M, N, W) game written in Ruby.
 
@@ -8,6 +8,12 @@ To play simple (3, 3, 3) game aka Tic-Tac-Toe against "experienced" AI, run the 
 ruby launcher.rb
 
 ```
+
+## Tests
+```
+rake
+```
+
 Edit `launcher.rb` to watch bots playing or play in "hot seat" mode.
 Warning: games with boards larger than 3x3 will be challenging to play from UI perspective :)
 
