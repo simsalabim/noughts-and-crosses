@@ -67,6 +67,21 @@ describe 'Noughts And Crosses' do
         subject.winner_row.map { |c| [c.row, c.column] }.must_equal winner_row
       end
     end
+
+    describe "players strategy" do
+      subject { NoughtsAndCrosses::Game.new(3, 3, 3) }
+      let(:player_2) { NoughtsAndCrosses::Player::AI::WinBlockOrOptimal.new('o') }
+
+      it "should find opponent's winning cell and block it" do
+        x_moves = [[0, 2], [1, 2]]
+        record_player_moves(subject, player_1, x_moves)
+
+        cell = player_2.send(:blocking_cell)
+        cell.row.must_equal 2
+        cell.column.must_equal 2
+        player_2.next_cell.must_equal cell
+      end
+    end
   end
 end
 
