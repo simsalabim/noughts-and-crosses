@@ -15,7 +15,7 @@ module NoughtsAndCrosses
   class Game
     PLAYER_STRATEGIES = %w(human win_block_or_optimal random).freeze
 
-    attr_reader :winner_row, :active_player, :board
+    attr_reader :winner_row, :active_player, :board, :tokens
 
     def initialize(rows_size, cols_size, winning_row_size)
       @rows_size = rows_size

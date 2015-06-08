@@ -81,6 +81,15 @@ describe 'Noughts And Crosses' do
         cell.column.must_equal 2
         player_2.next_cell.must_equal cell
       end
+
+      it 'should try block potential fork' do
+        record_player_moves(subject, player_1, [[0, 1], [1, 2]])
+        record_player_moves(subject, player_2, [[1, 1]])
+
+        cell = player_2.next_cell
+        cell.row.must_equal 0
+        cell.column.must_equal 2
+      end
     end
   end
 end
