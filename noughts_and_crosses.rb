@@ -94,30 +94,26 @@ module NoughtsAndCrosses
     end
 
     def horizontal_win_rows
-      rows = []
-      for i in 0..@rows_size
-        for j in 0..(@cols_size - @winning_row_size)
-          jj = j
-          row = []
-          while jj < j + @winning_row_size
-            row.push(cell_at(i, jj))
-            jj += 1
-          end
-          rows.push(row) if row.any?
-        end
-      end
-      rows
+      horizontal_or_vertical_win_rows(@rows_size, @cols_size, true)
     end
 
     def vertical_win_rows
+      horizontal_or_vertical_win_rows(@cols_size, @rows_size, false)
+    end
+
+    def horizontal_or_vertical_win_rows(first_bound, second_bound, is_horizontal = true)
       rows = []
-      for j in 0..@cols_size
-        for i in 0..(@rows_size - @winning_row_size)
-          ii = i
+      for i in 0..first_bound
+        for j in 0..(second_bound - @winning_row_size)
+          jj = j
           row = []
-          while ii < i + @winning_row_size
-            row.push(cell_at(ii, j))
-            ii += 1
+          while jj < j + @winning_row_size
+            if is_horizontal
+              row.push(cell_at(i, jj))
+            else
+              row.push(cell_at(jj, i))
+            end
+            jj += 1
           end
           rows.push(row) if row.any?
         end
@@ -165,12 +161,13 @@ module NoughtsAndCrosses
 
     def almost_won_row(token)
       available_win_rows(token).find do |row|
-        if @winning_row_size < @cols_size || @winning_row_size < @rows_size
-          row.select(&:vacant?).size == 2
-        else
-          row.select(&:vacant?).size == 1
-        end
+        row.select(&:vacant?).size == almost_won_vacant_cells_count
       end
+    end
+
+    def almost_won_vacant_cells_count
+      # @cols_size * @rows_size < @winning_row_size ** 2
+      @winning_row_size < @cols_size || @winning_row_size < @rows_size ? 2 : 1
     end
 
     def almost_lost_row(token)
@@ -223,26 +220,34 @@ module NoughtsAndCrosses
       for i in -1...@rows_size
         for j in -1...@cols_size
           if i < 0 || j < 0
-            if i < 0 && j < 0
-              print green(".\t")
-            elsif i < 0
-              print green("#{j}\t")
-            else
-              print green("#{i}\t")
-            end
+            print_axes(i, j)
           else
-            cell = cell_at(i, j)
-            token = cell.token || '-'
-            if @winner_row && @winner_row.include?(cell)
-              print red(token + "\t")
-            else
-              print token + "\t"
-            end
+            print_cell(i, j)
           end
         end
         puts
       end
       puts "\n\n"
+    end
+
+    def print_axes(row, column)
+      if row < 0 && column < 0
+        print green(".\t")
+      elsif row < 0
+        print green("#{column}\t")
+      else
+        print green("#{row}\t")
+      end
+    end
+
+    def print_cell(row, column)
+      cell = cell_at(row, column)
+      token = cell.token || '-'
+      if @winner_row && @winner_row.include?(cell)
+        print red(token + "\t")
+      else
+        print token + "\t"
+      end
     end
 
     def green(text)
