@@ -40,7 +40,7 @@ describe 'game state' do
     end
 
     it 'should report win if player has W tokens in row placed in diagonal' do
-      winner_row = [[0,2], [1, 3]]
+      winner_row = [[0, 2], [1, 3]]
       record_player_moves(subject, player_1, winner_row)
       subject.game_over?.must_equal true
       subject.winner_row.map { |c| [c.row, c.column] }.must_equal winner_row

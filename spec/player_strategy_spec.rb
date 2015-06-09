@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "players strategy" do
+describe 'players strategy' do
   subject { NoughtsAndCrosses::Game.new(3, 3, 3) }
   let(:player_1) { NoughtsAndCrosses::Player::Human.new('x') }
   let(:player_2) { NoughtsAndCrosses::Player::AI::WinBlockOrOptimal.new('o') }
