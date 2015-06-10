@@ -13,24 +13,32 @@ module NoughtsAndCrosses
     end
 
     def optimal_cell
-      rows = weighed_win_rows
-      return unless rows.any?
+      return unless weighed_win_rows.any?
 
-      vacant_cells = rows.last.select(&:vacant?)
-      leaders = {}
-      vacant_cells.each { |cell| leaders[cell] = 0 }
+      blocking_fork = opponent_appearances.sort_by { |_, value| value }.last[0]
+      blocking_fork || rows.last.select(&:vacant?).max_by(&:weight)
+    end
+
+    def opponent_appearances
+      appearances = {}
+      heaviest_vacant_cells.each { |cell| appearances[cell] = 0 }
 
       (@game.tokens - [@token]).each do |opponent|
-        opponent_occupied_rows = @game.available_win_rows(opponent).reject { |r| r.all?(&:vacant?) }
-
-        opponent_occupied_rows.each do |row|
-          vacant_cells.each do |cell|
-            leaders[cell] += 1 if row.include? cell
+        rows_occupied_by(opponent).each do |row|
+          heaviest_vacant_cells.each do |cell|
+            appearances[cell] += 1 if row.include? cell
           end
         end
       end
-      blocking_fork = leaders.sort_by { |_, value| value }.last[0]
-      blocking_fork || rows.last.select(&:vacant?).max_by(&:weight)
+      appearances
+    end
+
+    def heaviest_vacant_cells
+      @heaviest_vacant_cells ||= weighed_win_rows.last.select(&:vacant?)
+    end
+
+    def rows_occupied_by(token)
+      @game.available_win_rows(token).reject { |row| row.all?(&:vacant?) }
     end
 
     def random_cell
