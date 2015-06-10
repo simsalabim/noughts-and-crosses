@@ -47,10 +47,7 @@ module NoughtsAndCrosses
     def diagonal_top_left_row_wins
       rows = []
       for i in 0..(@rows_size - @winning_row_size)
-        for j in 0..(@cols_size - @winning_row_size)
-          row = detect_diagonal_row(i, j, 1)
-          rows.push(row) if row.any?
-        end
+        rows += diagonals_starting_at_row(i, 1)
       end
       rows
     end
@@ -59,16 +56,22 @@ module NoughtsAndCrosses
       rows = []
       i = @rows_size - 1
       while i >= @winning_row_size - 1
-        for j in 0..(@cols_size - @winning_row_size)
-          row = detect_diagonal_row(i, j, -1)
-          rows.push(row) if row.any?
-        end
+        rows += diagonals_starting_at_row(i, -1)
         i -= 1
       end
       rows
     end
 
-    def detect_diagonal_row(i, j, i_increment)
+    def diagonals_starting_at_row(i, i_increment)
+      rows = []
+      for j in 0..(@cols_size - @winning_row_size)
+        row = build_diagonal_row(i, j, i_increment)
+        rows.push(row) if row.any?
+      end
+      rows
+    end
+
+    def build_diagonal_row(i, j, i_increment)
       row = []
       @winning_row_size.times do
         row.push(cell_at(i, j))
