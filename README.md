@@ -1,4 +1,4 @@
-# Noughts And Crosses ![Build Status] (https://travis-ci.org/simsalabim/noughts-and-crosses.svg?branch=master "Build Status") [![Code Climate](https://codeclimate.com/github/simsalabim/noughts-and-crosses/badges/gpa.svg)](https://codeclimate.com/github/simsalabim/noughts-and-crosses)
+# Noughts And Crosses ![Build Status] (https://travis-ci.org/simsalabim/noughts-and-crosses.svg?branch=master "Build Status") [![Code Climate](https://codeclimate.com/github/simsalabim/noughts-and-crosses/badges/gpa.svg?refresh=1)](https://codeclimate.com/github/simsalabim/noughts-and-crosses)
 
 A simple console (M, N, W) game written in Ruby.
 
