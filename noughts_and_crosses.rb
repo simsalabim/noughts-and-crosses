@@ -1,4 +1,6 @@
 require_relative 'cell.rb'
+require_relative 'board_builder.rb'
+require_relative 'output.rb'
 require_relative 'players/base.rb'
 require_relative 'strategy.rb'
 require_relative 'players/ai/random.rb'
@@ -13,6 +15,8 @@ require_relative 'players/human.rb'
 
 module NoughtsAndCrosses
   class Game
+    include BoardBuilder
+    include Output
     PLAYER_STRATEGIES = %w(human win_block_or_optimal random).freeze
 
     attr_reader :winner_row, :active_player, :board, :tokens
@@ -77,88 +81,6 @@ module NoughtsAndCrosses
       end
     end
 
-    def generate_board
-      board = []
-      for i in 0...@rows_size
-        row = []
-        for j in 0...@cols_size
-          row.push(Cell.new(i, j))
-        end
-        board.push(row)
-      end
-      board
-    end
-
-    def board_cells
-      @board_cells ||= board.flatten
-    end
-
-    def horizontal_win_rows
-      horizontal_or_vertical_win_rows(@rows_size, @cols_size, true)
-    end
-
-    def vertical_win_rows
-      horizontal_or_vertical_win_rows(@cols_size, @rows_size, false)
-    end
-
-    def horizontal_or_vertical_win_rows(first_bound, second_bound, is_horizontal = true)
-      rows = []
-      for i in 0..first_bound
-        for j in 0..(second_bound - @winning_row_size)
-          jj = j
-          row = []
-          while jj < j + @winning_row_size
-            if is_horizontal
-              row.push(cell_at(i, jj))
-            else
-              row.push(cell_at(jj, i))
-            end
-            jj += 1
-          end
-          rows.push(row) if row.any?
-        end
-      end
-      rows
-    end
-
-    def diagonal_top_left_row_wins
-      rows = []
-      for i in 0..(@rows_size - @winning_row_size)
-        for j in 0..(@cols_size - @winning_row_size)
-          ii = i
-          jj = j
-          row = []
-          @winning_row_size.times do
-            row.push(cell_at(ii, jj))
-            ii += 1
-            jj += 1
-          end
-          rows.push(row) if row.any?
-        end
-      end
-      rows
-    end
-
-    def diagonal_bottom_left_row_wins
-      rows = []
-      i = @rows_size - 1
-      while i >= @winning_row_size - 1
-        for j in 0..(@cols_size - @winning_row_size)
-          ii = i
-          jj = j
-          row = []
-          @winning_row_size.times do
-            row.push(cell_at(ii, jj))
-            ii -= 1
-            jj += 1
-          end
-          rows.push(row) if row.any?
-        end
-        i -= 1
-      end
-      rows
-    end
-
     def almost_won_row(token)
       available_win_rows(token).find do |row|
         row.select(&:vacant?).size == almost_won_vacant_cells_count
@@ -185,18 +107,6 @@ module NoughtsAndCrosses
       @winning_rows.select { |row| row.all? { |c| c.vacant? || c.token == token } }
     end
 
-    def cell_at(row, column)
-      board_cells.find { |cell| cell.row == row && cell.column == column }
-    end
-
-    def vacant_cells
-      board_cells.select(&:vacant?)
-    end
-
-    def occupy(cell, token)
-      cell.token = token
-    end
-
     def game_over?
       @tokens.each do |token|
         @winner_row = @winning_rows.find { |row| row.all? { |cell| cell.token == token } }
@@ -213,49 +123,6 @@ module NoughtsAndCrosses
     # 'draw' can be detected at early stages as absence of potential winning rows
     def draw?
       board_cells.select(&:vacant?).size == 0
-    end
-
-    def print_board
-      puts "\n\n"
-      for i in -1...@rows_size
-        for j in -1...@cols_size
-          if i < 0 || j < 0
-            print_axes(i, j)
-          else
-            print_cell(i, j)
-          end
-        end
-        puts
-      end
-      puts "\n\n"
-    end
-
-    def print_axes(row, column)
-      if row < 0 && column < 0
-        print green(".\t")
-      elsif row < 0
-        print green("#{column}\t")
-      else
-        print green("#{row}\t")
-      end
-    end
-
-    def print_cell(row, column)
-      cell = cell_at(row, column)
-      token = cell.token || '-'
-      if @winner_row && @winner_row.include?(cell)
-        print red(token + "\t")
-      else
-        print token + "\t"
-      end
-    end
-
-    def green(text)
-      "\033[32m#{text}\033[0m"
-    end
-
-    def red(text)
-      "\033[31m#{text}\033[0m"
     end
   end
 end
