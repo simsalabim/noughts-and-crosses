@@ -48,14 +48,7 @@ module NoughtsAndCrosses
       rows = []
       for i in 0..(@rows_size - @winning_row_size)
         for j in 0..(@cols_size - @winning_row_size)
-          ii = i
-          jj = j
-          row = []
-          @winning_row_size.times do
-            row.push(cell_at(ii, jj))
-            ii += 1
-            jj += 1
-          end
+          row = detect_diagonal_row(i, j, 1)
           rows.push(row) if row.any?
         end
       end
@@ -67,19 +60,22 @@ module NoughtsAndCrosses
       i = @rows_size - 1
       while i >= @winning_row_size - 1
         for j in 0..(@cols_size - @winning_row_size)
-          ii = i
-          jj = j
-          row = []
-          @winning_row_size.times do
-            row.push(cell_at(ii, jj))
-            ii -= 1
-            jj += 1
-          end
+          row = detect_diagonal_row(i, j, -1)
           rows.push(row) if row.any?
         end
         i -= 1
       end
       rows
+    end
+
+    def detect_diagonal_row(i, j, i_increment)
+      row = []
+      @winning_row_size.times do
+        row.push(cell_at(i, j))
+        i += i_increment
+        j += 1
+      end
+      row
     end
 
     def cell_at(row, column)
