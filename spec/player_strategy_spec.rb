@@ -30,8 +30,6 @@ describe 'players strategy' do
   end
 
   it 'should chose optimal cell by weight if no potential fork detected' do
-    skip
-
     record_player_moves(subject, player_1, [[0, 1]])
     cell = player_2.next_cell
     cell.row.must_equal 1

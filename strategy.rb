@@ -9,31 +9,29 @@ module NoughtsAndCrosses
 
     def blocking_cell
       row = @game.almost_lost_row(@token)
-      blocking_fork = opponent_appearances.sort_by { |_, value| value }.last[0]
-      row ? row.find(&:vacant?) : blocking_fork
+      row ? row.find(&:vacant?) : blocking_fork_cell
     end
 
     def optimal_cell
       return unless weighed_win_rows.any?
-      rows.last.select(&:vacant?).max_by(&:weight)
+      weighed_win_rows.last.select(&:vacant?).max_by(&:weight)
     end
 
-    def opponent_appearances
-      appearances = {}
-      heaviest_vacant_cells.each { |cell| appearances[cell] = 0 }
-
+    def blocking_fork_cell
       (@game.tokens - [@token]).each do |opponent|
+        vacant_cells = []
         rows_occupied_by(opponent).each do |row|
-          heaviest_vacant_cells.each do |cell|
-            appearances[cell] += 1 if row.include? cell
-          end
+          vacant_cells << row.select(&:vacant?)
+        end
+
+        vacant_cells.flatten.each do |cell|
+          @game.occupy(cell, opponent)
+          potential_wins_count = @game.almost_won_rows(opponent).size
+          @game.vacate(cell)
+          return cell if potential_wins_count > 1
         end
       end
-      appearances
-    end
-
-    def heaviest_vacant_cells
-      @heaviest_vacant_cells ||= weighed_win_rows.last.select(&:vacant?)
+      nil
     end
 
     def rows_occupied_by(token)

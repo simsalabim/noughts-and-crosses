@@ -81,10 +81,14 @@ module NoughtsAndCrosses
       end
     end
 
-    def almost_won_row(token)
-      available_win_rows(token).find do |row|
+    def almost_won_rows(token)
+      available_win_rows(token).select do |row|
         row.select(&:vacant?).size == almost_won_vacant_cells_count
       end
+    end
+
+    def almost_won_row(token)
+      almost_won_rows(token).first
     end
 
     def almost_won_vacant_cells_count

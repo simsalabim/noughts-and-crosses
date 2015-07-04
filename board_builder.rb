@@ -92,5 +92,9 @@ module NoughtsAndCrosses
     def occupy(cell, token)
       cell.token = token
     end
+
+    def vacate(cell)
+      cell.token = nil
+    end
   end
 end
