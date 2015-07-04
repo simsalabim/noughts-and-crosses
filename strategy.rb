@@ -9,14 +9,13 @@ module NoughtsAndCrosses
 
     def blocking_cell
       row = @game.almost_lost_row(@token)
-      row.find(&:vacant?) if row
+      blocking_fork = opponent_appearances.sort_by { |_, value| value }.last[0]
+      row ? row.find(&:vacant?) : blocking_fork
     end
 
     def optimal_cell
       return unless weighed_win_rows.any?
-
-      blocking_fork = opponent_appearances.sort_by { |_, value| value }.last[0]
-      blocking_fork || rows.last.select(&:vacant?).max_by(&:weight)
+      rows.last.select(&:vacant?).max_by(&:weight)
     end
 
     def opponent_appearances
