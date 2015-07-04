@@ -19,7 +19,7 @@ options = {
 }
 
 OptionParser.new do |opts|
-  opts.banner = "Usage: launcher.rb [options]"
+  opts.banner = 'Usage: launcher.rb [options]'
 
   opts.on('-c=value', '--board-width=value', 'Board width in columns [integer]') do |w|
     options[:board][:columns] = w.to_i
@@ -41,7 +41,6 @@ OptionParser.new do |opts|
     options[:players][:o] = PLAYERS[o.to_sym]
   end
 end.parse!
-
 
 game = NoughtsAndCrosses::Game.new(options[:board][:rows], options[:board][:columns], options[:board][:winning_streak])
 
