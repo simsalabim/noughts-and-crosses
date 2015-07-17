@@ -119,8 +119,7 @@ module NoughtsAndCrosses
           return true
         end
       end
-      return true if draw?
-      false
+      draw?
     end
 
     # TODO
