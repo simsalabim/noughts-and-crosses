@@ -9,7 +9,20 @@ module NoughtsAndCrosses
 
     def blocking_cell
       row = @game.almost_lost_row(@token)
-      row ? row.find(&:vacant?) : blocking_fork_cell
+      if row
+        occupied_by_opponent = row.find { |c| c.token != nil && c.token != @token }
+        index = row.index(occupied_by_opponent)
+        if index - 1 >= 0 && row[index - 1].token.nil?
+          row[index - 1]
+        else
+          row.reverse!
+          occupied_by_opponent = row.find { |c| c.token != nil && c.token != @token }
+          index = row.index(occupied_by_opponent)
+          row[index - 1] if index - 1 >= 0 && row[index - 1].token.nil?
+        end
+      else
+        blocking_fork_cell
+      end
     end
 
     def optimal_cell
