@@ -4,7 +4,18 @@ module NoughtsAndCrosses
 
     def winning_cell
       row = @game.almost_won_row(@token)
-      row.find(&:vacant?) if row
+      if row
+        occupied_cell = row.find { |c| c.token == @token }
+        index = row.index(occupied_cell)
+        if index - 1 >= 0 && row[index - 1].token.nil?
+          row[index - 1]
+        else
+          row.reverse!
+          occupied_cell = row.find { |c| c.token == @token }
+          index = row.index(occupied_cell)
+          row[index - 1] if index - 1 >= 0 && row[index - 1].token.nil?
+        end
+      end
     end
 
     def blocking_cell
