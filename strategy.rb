@@ -22,6 +22,7 @@ module NoughtsAndCrosses
       row = @game.almost_lost_row(@token)
 
       if row
+        return row.find(&:vacant?) if row.select { |c| c.vacant? }.size == 1
         occupied_by_opponent = row.find { |c| c.token != nil && c.token != @token }
         index = row.index(occupied_by_opponent)
         if index - 1 >= 0 && row[index - 1].token.nil?
