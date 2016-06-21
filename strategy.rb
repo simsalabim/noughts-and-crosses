@@ -20,6 +20,7 @@ module NoughtsAndCrosses
 
     def blocking_cell
       row = @game.almost_lost_row(@token)
+
       if row
         occupied_by_opponent = row.find { |c| c.token != nil && c.token != @token }
         index = row.index(occupied_by_opponent)

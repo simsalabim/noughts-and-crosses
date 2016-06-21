@@ -47,6 +47,19 @@ describe 'players strategy' do
     cell = player_2.next_cell
     [cell.row, cell.column].must_equal [1, 6]
   end
+
+  it 'should block winning streaks correctly in 10x10x5 game' do
+    board = NoughtsAndCrosses::Game.new(10, 10, 5)
+    board.add_player(player_1)
+    board.add_player(player_2)
+
+    record_player_moves(board, player_1, [[4, 3], [3, 4], [2, 5], [1, 6]])
+    record_player_moves(board, player_2, [[5, 4], [6, 1], [5, 2]])
+
+    cell = player_2.next_cell
+    [cell.row, cell.column].must_equal [0, 7]
+  end
+
 end
 
 def record_player_moves(game, player, moves = [])
