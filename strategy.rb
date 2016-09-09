@@ -7,13 +7,15 @@ module NoughtsAndCrosses
       if row
         occupied_cell = row.find { |c| c.token == @token }
         index = row.index(occupied_cell)
-        if index - 1 >= 0 && row[index - 1].token.nil?
-          row[index - 1]
-        else
-          row.reverse!
-          occupied_cell = row.find { |c| c.token == @token }
-          index = row.index(occupied_cell)
-          row[index - 1] if index - 1 >= 0 && row[index - 1].token.nil?
+        # TODO improve winning cell detection, e.g. --OO-XXX-XX- should insert X between X's
+        case
+          when index - 1 >= 0 && row[index - 1].token.nil? then row[index - 1]
+          when index + 1 <= row.size && row[index + 1].token.nil? then row[index + 1]
+          else
+            row.reverse!
+            occupied_cell = row.find { |c| c.token == @token }
+            index = row.index(occupied_cell)
+            row[index - 1] if index - 1 >= 0 && row[index - 1].token.nil?
         end
       end
     end

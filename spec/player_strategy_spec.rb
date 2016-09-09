@@ -82,6 +82,17 @@ describe 'players strategy' do
     [cell.row, cell.column].must_equal [2, 2]
   end
 
+  it 'should win allright' do
+    board = NoughtsAndCrosses::Game.new(3, 3, 3)
+    board.add_player(player_1)
+    board.add_player(player_2)
+
+    record_player_moves(board, player_1, [[1, 1], [2, 0], [2, 1]])
+    record_player_moves(board, player_2, [[0, 2], [2, 2]])
+
+    cell = player_2.next_cell
+    [cell.row, cell.column].must_equal [1, 2]
+  end
 end
 
 def record_player_moves(game, player, moves = [])
