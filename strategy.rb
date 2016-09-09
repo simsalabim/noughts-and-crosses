@@ -34,7 +34,11 @@ module NoughtsAndCrosses
           row[index - 1] if index - 1 >= 0 && row[index - 1].token.nil?
         end
       else
-        blocking_fork_cell
+        if @game.winning_row_size < @game.rows_size || @game.winning_row_size < @game.cols_size
+          blocking_fork_cell(:predictive)
+        else
+          blocking_fork_cell
+        end
       end
     end
 
@@ -43,18 +47,25 @@ module NoughtsAndCrosses
       weighed_win_rows.last.select(&:vacant?).max_by(&:weight)
     end
 
-    def blocking_fork_cell
+    def blocking_fork_cell(mode = nil)
       (@game.tokens - [@token]).each do |opponent|
         vacant_cells = []
         rows_occupied_by(opponent).each do |row|
           vacant_cells << row.select(&:vacant?)
         end
 
-        vacant_cells.flatten.each do |cell|
-          @game.occupy(cell, opponent)
-          potential_wins_count = @game.almost_won_rows(opponent).size
-          @game.vacate(cell)
-          return cell if potential_wins_count > 1
+        if mode == :predictive
+          vacant_cells.flatten.each do |cell|
+            @game.occupy(cell, opponent)
+            potential_wins_count = @game.almost_won_rows(opponent).size
+            @game.vacate(cell)
+            return cell if potential_wins_count > 1
+          end
+        else
+          vacant_cells.flatten.each do |cell|
+            potential_wins_count = @game.almost_won_rows(opponent).size
+            return cell if potential_wins_count == 1
+          end
         end
       end
       nil

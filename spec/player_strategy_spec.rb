@@ -25,15 +25,13 @@ describe 'players strategy' do
     record_player_moves(subject, player_2, [[1, 1]])
 
     cell = player_2.next_cell
-    cell.row.must_equal 0
-    cell.column.must_equal 2
+    [cell.row, cell.column].must_equal [2, 0]
   end
 
   it 'should chose optimal cell by weight if no potential fork detected' do
     record_player_moves(subject, player_1, [[0, 1]])
     cell = player_2.next_cell
-    cell.row.must_equal 1
-    cell.column.must_equal 1
+    [cell.row, cell.column].must_equal [1, 1]
   end
 
   it 'should block winning streaks correctly in 10x10x5 game' do
@@ -71,6 +69,19 @@ describe 'players strategy' do
     cell = player_2.next_cell
     [cell.row, cell.column].must_equal [6, 6]
   end
+
+  it 'should block allright' do
+    board = NoughtsAndCrosses::Game.new(3, 3, 3)
+    board.add_player(player_1)
+    board.add_player(player_2)
+
+    record_player_moves(board, player_1, [[1, 1], [2, 0]])
+    record_player_moves(board, player_2, [[0, 2]])
+
+    cell = player_2.next_cell
+    [cell.row, cell.column].must_equal [2, 2]
+  end
+
 end
 
 def record_player_moves(game, player, moves = [])

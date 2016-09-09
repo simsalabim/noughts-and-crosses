@@ -19,7 +19,7 @@ module NoughtsAndCrosses
     include Output
     PLAYER_STRATEGIES = %w(human win_block_or_optimal random).freeze
 
-    attr_reader :winner_row, :active_player, :board, :tokens
+    attr_reader :winner_row, :active_player, :board, :tokens, :winning_row_size, :rows_size, :cols_size
 
     def initialize(rows_size, cols_size, winning_row_size)
       @rows_size = rows_size
@@ -83,8 +83,7 @@ module NoughtsAndCrosses
 
     def almost_won_rows(token)
       available_win_rows(token).select do |row|
-        # TODO: check for W-1 successive occurrences of a token in a row
-        row.select { |c| c.token == token }.size == @winning_row_size - 1
+        row.select { |c| c.token == token }.map(&:token).join.include? token * (@winning_row_size - 1)
       end
     end
 
